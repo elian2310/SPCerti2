@@ -5,9 +5,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomePage {
     WebDriver driver;
@@ -48,10 +51,35 @@ public class HomePage {
     @FindBy(xpath = "//*[@id=\"inventory_container\"]/div/div[2]/div[2]/div[2]/div")
     WebElement bikelightPrice;
 
+    @FindBy(className = "product_sort_container")
+    WebElement productFilterDropDown;
+
+    @FindBy(className = "inventory_item_price")
+    List<WebElement> itemPricesLabel;
+
     public HomePage(WebDriver driver){
         this.driver=driver;
         PageFactory.initElements(driver, this);
     }
+
+    public void selectProductFilter(String element){
+        Select selectObject = new Select(productFilterDropDown);
+        selectObject.selectByVisibleText(element);
+
+    }
+
+    public List<Double> getAllItemPrices(){
+        List<Double> prices = new ArrayList<>();
+
+        for (WebElement itemPrice: itemPricesLabel) {
+            String itemPriceText = itemPrice.getText();
+            StringBuilder sb = new StringBuilder(itemPriceText);
+            sb.deleteCharAt(0);
+            prices.add(Double.parseDouble(sb.toString()));
+        }
+        return prices;
+    }
+
 
     public boolean appLogoIsDisplayed() {
         boolean appLogoIsDisplayed = appLogo.isDisplayed();
